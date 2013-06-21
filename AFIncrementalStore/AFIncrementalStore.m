@@ -187,7 +187,7 @@ static inline void AFSaveManagedObjectContextOrThrowInternalConsistencyException
 
 - (NSManagedObjectContext *)backingManagedObjectContext {
     if (!_backingManagedObjectContext) {
-        _backingManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        _backingManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         _backingManagedObjectContext.persistentStoreCoordinator = _backingPersistentStoreCoordinator;
         _backingManagedObjectContext.retainsRegisteredObjects = YES;
     }
@@ -408,7 +408,7 @@ withAttributeAndRelationshipValuesFromManagedObject:(NSManagedObject *)managedOb
             [context performBlockAndWait:^{
                 id representationOrArrayOfRepresentations = [self.HTTPClient representationOrArrayOfRepresentationsOfEntity:fetchRequest.entity fromResponseObject:responseObject];
         
-                NSManagedObjectContext *childContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+                NSManagedObjectContext *childContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
                 childContext.parentContext = context;
                 childContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
 
@@ -730,7 +730,7 @@ withAttributeAndRelationshipValuesFromManagedObject:(NSManagedObject *)managedOb
     
     if ([self.HTTPClient respondsToSelector:@selector(shouldFetchRemoteAttributeValuesForObjectWithID:inManagedObjectContext:)] && [self.HTTPClient shouldFetchRemoteAttributeValuesForObjectWithID:objectID inManagedObjectContext:context]) {
         if (attributeValues) {
-            NSManagedObjectContext *childContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            NSManagedObjectContext *childContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
             childContext.parentContext = context;
             childContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
             
@@ -804,7 +804,7 @@ withAttributeAndRelationshipValuesFromManagedObject:(NSManagedObject *)managedOb
         NSURLRequest *request = [self.HTTPClient requestWithMethod:@"GET" pathForRelationship:relationship forObjectWithID:objectID withContext:context];
         
         if ([request URL] && ![[context existingObjectWithID:objectID error:nil] hasChanges]) {
-            NSManagedObjectContext *childContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+            NSManagedObjectContext *childContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
             childContext.parentContext = context;
             childContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy;
 
